@@ -1,0 +1,7 @@
+ftp.xpg.com.br
+21
+60
+hugo4566
+teste123
+H:\\Aulas\\Banco de Dados
+/docs/
