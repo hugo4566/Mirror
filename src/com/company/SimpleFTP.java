@@ -199,8 +199,30 @@ public class SimpleFTP {
         }
     }
 
-    private synchronized String retr() {
-        return null;
+
+    public synchronized String retr(String filename) throws IOException {
+
+        sendLine("PASV");
+        ConexaoDados conexaoDados = new ConexaoDados(response()).invoke();
+        Socket dataSocket = new Socket(conexaoDados.getIp(), conexaoDados.getPort());
+
+        sendLine("RETR " + filename);
+        response();
+
+        BufferedInputStream dataIn = new BufferedInputStream(dataSocket.getInputStream());
+        BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(new File(filename)));
+        byte[] buffer = new byte[4096];
+        int bytesRead = 0;
+        while ((bytesRead = dataIn.read(buffer)) != -1)
+        {
+            output.write(buffer, 0 ,bytesRead);
+        }
+
+        output.flush();
+        output.close();
+        dataIn.close();
+
+        return response();
     }
 
     private synchronized String rmd() {
@@ -262,8 +284,7 @@ public class SimpleFTP {
         stor(filename);
 
         BufferedInputStream input = new BufferedInputStream(inputStream);
-        BufferedOutputStream output = new BufferedOutputStream(dataSocket
-                .getOutputStream());
+        BufferedOutputStream output = new BufferedOutputStream(dataSocket.getOutputStream());
         byte[] buffer = new byte[4096];
         int bytesRead = 0;
         while ((bytesRead = input.read(buffer)) != -1) {
