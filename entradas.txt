@@ -3,5 +3,5 @@ ftp.xpg.com.br
 60
 hugo4566
 teste123
-H:\\Aulas\\Banco de Dados
+/home/hugo/Downloads/genymotion
 /docs/

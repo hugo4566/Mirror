@@ -123,8 +123,19 @@ public class SimpleFTP {
         return output.toString();
     }
 
-    private synchronized String mdtm() {
-        return null;
+    /**
+     * Returns the last-modified time of the given file on the remote host in the format
+     * "YYYYMMDDhhmmss":
+     * YYYY is the four-digit year,
+     * MM is the month from 01 to 12,
+     * DD is the day of the month from 01 to 31,
+     * hh is the hour from 00 to 23,
+     * mm is the minute from 00 to 59, and ss is the second from 00 to 59.
+     * @return response
+     */
+    public synchronized String mdtm(String fileName) throws IOException {
+        sendLine("MDTM "+fileName);
+        return response();
     }
 
     public synchronized String mkd(String dirName) throws IOException {
@@ -304,9 +315,9 @@ public class SimpleFTP {
 
     private String response() throws IOException {
         String line = reader.readLine();
-        //if (DEBUG) {
-        System.out.println("< " + line);
-        //}
+        if (DEBUG) {
+            System.out.println("< " + line);
+        }
         return line;
     }
 
@@ -316,7 +327,7 @@ public class SimpleFTP {
 
     private BufferedWriter writer = null;
 
-    private static boolean DEBUG = true;
+    private static boolean DEBUG = false;
 
     protected class ConexaoDados {
         private String response;
