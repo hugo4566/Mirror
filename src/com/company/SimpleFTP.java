@@ -67,7 +67,7 @@ public class SimpleFTP {
      * @param dir diretorio
      * @return response
      */
-    private synchronized String cwd(String dir) throws IOException {
+    public synchronized String cwd(String dir) throws IOException {
         sendLine("CWD " + dir);
         return response();
     }

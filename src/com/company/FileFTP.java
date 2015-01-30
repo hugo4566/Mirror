@@ -13,6 +13,7 @@ public class FileFTP {
     private String nomeModificador;
     private String modificado;
     private Calendar dataModificacao;
+    private String path;
 
     public FileFTP(String response) {
         String[] partes = response.split("\\s+");
@@ -71,13 +72,22 @@ public class FileFTP {
         this.dataModificacao = dataModificacao;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     @Override
     public String toString() {
         return "FileFTP{" +
                 "tipo=" + tipo +
-                ", nome='" + nome + '\'' +
+                ", nome=" + nome +
                 ", tamanho=" + tamanho +
                 ", modificado='" + modificado + '\'' +
+                ", caminho='" + path + '\'' +
                 ", data de modificacao='" + dataModificacao + '\'' +
                 '}';
     }

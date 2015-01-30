@@ -3,5 +3,5 @@ ftp.xpg.com.br
 60
 hugo4566
 teste123
-/home/hugo/Downloads/genymotion
+C:\Users\HugoShiki\IdeaProjects\Mirror\src
 /docs/

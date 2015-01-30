@@ -3,6 +3,7 @@ package com.company;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 /**
  * Created by Hugo on 13/01/2015.
@@ -51,7 +52,44 @@ public class Main {
         listFilesServer.addAll(listFilesFromServer("/"));
     }
 
-    private static void cicloC() {
+    private static void cicloC() throws IOException {
+
+        for (FileFTP fileFTP :listFilesServer){
+            puxarDoServer(fileFTP);
+        }
+
+        for (File file :listFilesClient){
+            puxarDoLocal(file);
+        }
+    }
+
+    private static void puxarDoServer(FileFTP fileFTP) throws IOException {
+        String path = fileFTP.getPath().replaceAll("/","\\\\");
+        if(!path.endsWith("\\")){
+            path = path.concat("\\");
+        }
+        if(fileFTP.getTipo().equals("1")) {
+            simpleFTP.retr(infoEntrada.getDirLocal()+path+fileFTP.getNome());
+        }else{
+            File file = new File(infoEntrada.getDirLocal()+path+fileFTP.getNome());
+            if(!file.exists())
+                file.mkdirs();
+        }
+    }
+
+    private static void puxarDoLocal(File file) throws IOException {
+        if (file.isDirectory()) {
+            String path = getRelativeLocalPath(file).replaceAll("\\\\","/");
+            if(!path.endsWith("/")){
+                path = path.concat("/");
+            }
+            simpleFTP.mkd(path);
+        }else if(file.isFile()){
+            String path = getRelativeLocalPath(file).replaceAll("\\\\","/");
+            path = path.substring(0,(path.length()-file.getName().length()));
+            simpleFTP.cwd(path);
+            simpleFTP.stor(file);
+        }
     }
 
     public static Collection<File> listFilesFromFolder(File folder) {
@@ -79,6 +117,7 @@ public class Main {
             }else{
                 fileEntry.setDataModificacao(Utils.mdtmParaCalendar(simpleFTP.mdtm(fileEntry.getNome())));
             }
+            fileEntry.setPath(path);
             listFilesServer.add(fileEntry);
             if(DEBUG) System.out.println(fileEntry.toString());
         }
@@ -95,5 +134,9 @@ public class Main {
             }
         }
         return listaFileFTPs;
+    }
+
+    private static String getRelativeLocalPath(File fileEntry) {
+        return fileEntry.getAbsolutePath().substring(infoEntrada.getDirLocal().length());
     }
 }
