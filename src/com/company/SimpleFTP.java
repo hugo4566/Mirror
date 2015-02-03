@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.StringTokenizer;
 
 /**
@@ -247,6 +248,20 @@ public class SimpleFTP {
      */
     public synchronized String rmd(String dirName) throws IOException {
         sendLine("RMD " + dirName);
+        return response();
+    }
+
+    /**
+     * The format of the command is MFMT YYYYMMDDHHMMSS path
+     * @param calendar
+     * @param path
+     * @return
+     * @throws IOException
+     */
+    public synchronized String mfmt(Calendar calendar, String path) throws IOException {
+        calendar.add(Calendar.HOUR_OF_DAY, +2);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        sendLine("MFMT "+sdf.format(calendar.getTimeInMillis())+" "+ path);
         return response();
     }
 

@@ -174,7 +174,7 @@ public class Main {
             path = path.substring(0,(path.length()-file.getName().length()));
             simpleFTP.cwd(path);
             simpleFTP.stor(file);
-            simpleFTP.mfmt(file.lastModified(),path+file);
+            simpleFTP.mfmt(Utils.lastModifiedParaCalendar(file.lastModified()), path + file.getName());
         }
     }
 
