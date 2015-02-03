@@ -72,6 +72,12 @@ public class SimpleFTP {
         return response();
     }
 
+    /**
+     * Deletes the given file on the remote host.
+     * @param filename
+     * @return
+     * @throws IOException
+     */
     public synchronized String dele(String filename) throws IOException {
         sendLine("DELE " + filename);
         return response();
@@ -225,8 +231,12 @@ public class SimpleFTP {
         return response();
     }
 
-    private synchronized String rmd() {
-        return null;
+    /**
+     * Deletes the named directory on the remote host.
+     */
+    public synchronized String rmd(String dirName) throws IOException {
+        sendLine("RMD " + dirName);
+        return response();
     }
 
     private synchronized String rnfr() {

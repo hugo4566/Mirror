@@ -3,6 +3,7 @@ package com.company;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 /**
@@ -54,13 +55,94 @@ public class Main {
 
     private static void cicloC() throws IOException {
 
+        for (Iterator<FileFTP> iterator = listFilesServer.iterator(); iterator.hasNext();) {
+            FileFTP fileftp = iterator.next();
+            boolean found = false;
+            for (Iterator<File> iterator2 = listFilesClient.iterator(); iterator2.hasNext();) {
+                File file = iterator2.next();
+                switch (fileftp.compareTo(file)) {
+                    case 0:
+                        found = true;
+                        break;
+                    case 1:
+                        simpleFTP.stor(file);
+                        found = true;
+                        break;
+                    case -1:
+                        simpleFTP.retr(fileftp.getNome());
+                        found = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (!found){
+                if (fileftp.getTipo().equals("1")){
+                    simpleFTP.retr(fileftp.getNome());
+                } else {
+                    File f = new File(fileftp.getNome());
+                    f.mkdir();
+                }
+            }
+        }
+        for (Iterator<File> iterator = listFilesClient.iterator(); iterator.hasNext();) {
+            File file = iterator.next();
+            boolean found = false;
+            for (Iterator<FileFTP> iterator2 = listFilesServer.iterator(); iterator2.hasNext();) {
+                FileFTP fileftp = iterator2.next();
+                switch (fileftp.compareTo(file)) {
+                    case 0:
+                        found = true;
+                        break;
+                    case 1:
+                        simpleFTP.retr(fileftp.getNome());
+                        found = true;
+                        break;
+                    case -1:
+                        simpleFTP.stor(file);
+                        found = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (!found){
+                if (file.isDirectory()){
+                    simpleFTP.mkd(file.getName());
+                } else {
+                    simpleFTP.stor(file);
+                }
+            }
+        }
+
+        /*
         for (FileFTP fileFTP :listFilesServer){
             puxarDoServer(fileFTP);
+            deletarDoServer(fileFTP);
         }
+
 
         for (File file :listFilesClient){
             puxarDoLocal(file);
+            deletarDoLocal(file);
         }
+        */
+
+    }
+
+    private static void deletarDoServer(FileFTP fileFTP) throws IOException {
+        String path = fileFTP.getPath();
+        if(!path.endsWith("/"))
+            path = path.concat("/");
+        if(fileFTP.getTipo().equals("1")) {
+            simpleFTP.dele(path + fileFTP.getNome());
+        }else{
+            simpleFTP.rmd(path + fileFTP.getNome());
+        }
+    }
+
+    private static void deletarDoLocal(File file) throws IOException {
+        file.delete();
     }
 
     private static void puxarDoServer(FileFTP fileFTP) throws IOException {
@@ -115,7 +197,7 @@ public class Main {
                 else
                     listFilesServer.addAll(listFilesFromServer(path + "/" + fileEntry.getNome()));
             }else{
-                fileEntry.setDataModificacao(Utils.mdtmParaCalendar(simpleFTP.mdtm(fileEntry.getNome())));
+                fileEntry.setDataModificacao(Utils.mdtmParaCalendar(simpleFTP.mdtm(path + "/" + fileEntry.getNome())));
             }
             fileEntry.setPath(path);
             listFilesServer.add(fileEntry);

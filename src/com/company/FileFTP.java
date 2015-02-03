@@ -1,5 +1,6 @@
 package com.company;
 
+import java.io.File;
 import java.util.Calendar;
 
 /**
@@ -22,6 +23,14 @@ public class FileFTP {
         this.tamanho = (partes[4]);
         this.nomeModificador = (partes[2]);
         this.modificado = (partes[5]+" "+partes[6]+" "+partes[7]);
+    }
+
+    public int compareTo(File file){
+        if (this.nome.equals(file.getName()) && this.path.equals(file.getAbsolutePath())){
+            return this.dataModificacao.compareTo(Utils.lastModifiedParaCalendar(file.lastModified()));
+        } else {
+            return 999;
+        }
     }
 
     public String getTipo() {

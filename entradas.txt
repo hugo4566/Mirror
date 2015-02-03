@@ -1,7 +1,7 @@
 ftp.xpg.com.br
 21
 60
-hugo4566
+m1rr0rftp
 teste123
 C:\Users\HugoShiki\IdeaProjects\Mirror\src
 /docs/
