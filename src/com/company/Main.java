@@ -1,10 +1,14 @@
 package com.company;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.regex.Pattern;
 
 /**
  * Created by Hugo on 13/01/2015.
@@ -29,6 +33,7 @@ public class Main {
     static SimpleFTP simpleFTP = new SimpleFTP();
     static Collection<File> listFilesClient = new ArrayList<File>();
     static Collection<FileFTP> listFilesServer = new ArrayList<FileFTP>();
+    static Collection<FileFTP> OldlistFilesServer = new ArrayList<FileFTP>();
     private static boolean DEBUG = true;
 
     public static void main(String[] args) throws IOException {
@@ -65,11 +70,11 @@ public class Main {
                         found = true;
                         break;
                     case 1:
-                        simpleFTP.stor(file);
+                        puxarDoLocal(file);
                         found = true;
                         break;
                     case -1:
-                        simpleFTP.retr(fileftp.getNome());
+                        puxarDoServer(fileftp);
                         found = true;
                         break;
                     default:
@@ -77,12 +82,17 @@ public class Main {
                 }
             }
             if (!found){
-                if (fileftp.getTipo().equals("1")){
-                    simpleFTP.retr(fileftp.getNome());
-                } else {
-                    File f = new File(fileftp.getNome());
-                    f.mkdir();
-                }
+            	boolean oldfind = false;
+            	for (FileFTP oldftp : OldlistFilesServer){
+            		if (fileftp.compareTo(oldftp) != 999){
+            			deletarDoServer(fileftp);
+            			oldfind = true;
+            			break;
+            		}
+            	} 
+            	if (!oldfind){
+            		puxarDoServer(fileftp);
+            	}
             }
         }
         for (Iterator<File> iterator = listFilesClient.iterator(); iterator.hasNext();) {
@@ -95,11 +105,11 @@ public class Main {
                         found = true;
                         break;
                     case 1:
-                        simpleFTP.retr(fileftp.getNome());
+                        puxarDoServer(fileftp);
                         found = true;
                         break;
                     case -1:
-                        simpleFTP.stor(file);
+                        puxarDoLocal(file);
                         found = true;
                         break;
                     default:
@@ -107,27 +117,20 @@ public class Main {
                 }
             }
             if (!found){
-                if (file.isDirectory()){
-                    simpleFTP.mkd(file.getName());
-                } else {
-                    simpleFTP.stor(file);
-                }
+            	boolean oldfind = false;
+            	for (FileFTP oldftp : OldlistFilesServer){
+            		if (oldftp.compareTo(file) != 999){
+            			deletarDoLocal(file);
+            			oldfind = true;
+            			break;
+            		}
+            	} 
+            	if (!oldfind){
+            		puxarDoLocal(file);
+            	}
+            	
             }
         }
-
-        /*
-        for (FileFTP fileFTP :listFilesServer){
-            puxarDoServer(fileFTP);
-            deletarDoServer(fileFTP);
-        }
-
-
-        for (File file :listFilesClient){
-            puxarDoLocal(file);
-            deletarDoLocal(file);
-        }
-        */
-
     }
 
     private static void deletarDoServer(FileFTP fileFTP) throws IOException {
@@ -171,6 +174,7 @@ public class Main {
             path = path.substring(0,(path.length()-file.getName().length()));
             simpleFTP.cwd(path);
             simpleFTP.stor(file);
+            simpleFTP.mfmt(file.lastModified(),path+file);
         }
     }
 

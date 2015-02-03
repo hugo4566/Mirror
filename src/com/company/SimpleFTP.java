@@ -1,7 +1,18 @@
 package com.company;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
 
 /**
@@ -397,6 +408,20 @@ public class SimpleFTP {
             }
             return this;
         }
+    }
+    
+    /**
+     * The format of the command is MFMT YYYYMMDDHHMMSS path
+     *
+     * @param value,path
+     * @param path
+     * @return response
+     * @throws IOException
+     */
+    public synchronized String mfmt(long value, String path) throws IOException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        sendLine("MFMT "+sdf.format(value)+" "+ path);
+        return response();
     }
 }
 

@@ -32,6 +32,14 @@ public class FileFTP {
             return 999;
         }
     }
+    
+    public int compareTo(FileFTP file){
+        if (this.nome.equals(file.getNome()) && this.path.equals(file.getPath())){
+            return this.dataModificacao.compareTo(file.getDataModificacao());
+        } else {
+            return 999;
+        }
+    }
 
     public String getTipo() {
         return tipo;
