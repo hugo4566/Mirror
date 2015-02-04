@@ -3,5 +3,5 @@ ftp.xpg.com.br
 60
 m1rr0rftp
 teste123
-C:\Users\HugoShiki\Documents\PastaSincronizar
+/home/hugo/Documents/sincronizar
 /docs/

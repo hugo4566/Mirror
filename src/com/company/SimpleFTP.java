@@ -218,17 +218,24 @@ public class SimpleFTP {
     }
 
 
-    public synchronized String retr(String filename) throws IOException {
+    public synchronized String retr(String filename,String fileNameServer) throws IOException {
 
         sendLine("PASV");
         ConexaoDados conexaoDados = new ConexaoDados(response()).invoke();
         Socket dataSocket = new Socket(conexaoDados.getIp(), conexaoDados.getPort());
 
-        sendLine("RETR " + filename);
+        sendLine("RETR " + fileNameServer);
         response();
 
+
+        File targetFile = new File(filename);
+        File parent = targetFile.getParentFile();
+        if(!parent.exists() && !parent.mkdirs()){
+            throw new IllegalStateException("Couldn't create dir: " + parent);
+        }
+
         BufferedInputStream dataIn = new BufferedInputStream(dataSocket.getInputStream());
-        BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(new File(filename)));
+        BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(targetFile));
         byte[] buffer = new byte[4096];
         int bytesRead = 0;
         while ((bytesRead = dataIn.read(buffer)) != -1)

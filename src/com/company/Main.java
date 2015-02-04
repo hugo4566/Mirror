@@ -36,10 +36,13 @@ public class Main {
     static Collection<FileFTP> OldlistFilesServer = new ArrayList<FileFTP>();
     private static boolean DEBUG = true;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         cicloA();
-        cicloB();
-        cicloC();
+        while (true) {
+            cicloB();
+            cicloC();
+            Thread.sleep(infoEntrada.getIntervalo()*1000);
+        }
     }
 
     private static void cicloA() throws IOException {
@@ -48,7 +51,7 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         infoEntrada = new InfoEntrada(br).invoke();
         System.out.println(infoEntrada.toString());
-        simpleFTP.connect(infoEntrada.getHost(), infoEntrada.getUsuario(), infoEntrada.getSenha());
+        System.out.println(simpleFTP.connect(infoEntrada.getHost(), infoEntrada.getUsuario(), infoEntrada.getSenha()));
     }
 
     private static void cicloB() throws IOException {
@@ -131,6 +134,14 @@ public class Main {
             	
             }
         }
+
+        OldlistFilesServer.clear();
+        OldlistFilesServer.addAll(listFilesServer);
+        /*
+        for(FileFTP fileFTP:listFilesServer){
+            puxarDoServer(fileFTP);
+        }
+        */
     }
 
     private static void deletarDoServer(FileFTP fileFTP) throws IOException {
@@ -149,12 +160,13 @@ public class Main {
     }
 
     private static void puxarDoServer(FileFTP fileFTP) throws IOException {
-        String path = fileFTP.getPath().replaceAll("/","\\\\");
-        if(!path.endsWith("\\")){
-            path = path.concat("\\");
+        String path = fileFTP.getPath();
+        if(!path.endsWith("/")){
+            path = path.concat("/");
         }
+
         if(fileFTP.getTipo().equals("1")) {
-            simpleFTP.retr(infoEntrada.getDirLocal()+path+fileFTP.getNome());
+            simpleFTP.retr(infoEntrada.getDirLocal()+path+fileFTP.getNome(),path+fileFTP.getNome());
         }else{
             File file = new File(infoEntrada.getDirLocal()+path+fileFTP.getNome());
             if(!file.exists())
@@ -164,13 +176,13 @@ public class Main {
 
     private static void puxarDoLocal(File file) throws IOException {
         if (file.isDirectory()) {
-            String path = getRelativeLocalPath(file).replaceAll("\\\\","/");
+            String path = getRelativeLocalPath(file);
             if(!path.endsWith("/")){
                 path = path.concat("/");
             }
             simpleFTP.mkd(path);
         }else if(file.isFile()){
-            String path = getRelativeLocalPath(file).replaceAll("\\\\","/");
+            String path = getRelativeLocalPath(file);
             path = path.substring(0,(path.length()-file.getName().length()));
             simpleFTP.cwd(path);
             simpleFTP.stor(file);
