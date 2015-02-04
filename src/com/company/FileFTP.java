@@ -27,7 +27,11 @@ public class FileFTP {
 
     public int compareTo(File file){
         if (this.nome.equals(file.getName()) && this.path.equals(file.getAbsolutePath())){
-            return this.dataModificacao.compareTo(Utils.lastModifiedParaCalendar(file.lastModified()));
+        	//if (this.tipo.equals("1") && file.isFile()){
+        		return this.dataModificacao.compareTo(Utils.lastModifiedParaCalendar(file.lastModified()));
+        	//} else {
+        	//	return 0;
+        	//}
         } else {
             return 999;
         }
@@ -35,7 +39,11 @@ public class FileFTP {
     
     public int compareTo(FileFTP file){
         if (this.nome.equals(file.getNome()) && this.path.equals(file.getPath())){
-            return this.dataModificacao.compareTo(file.getDataModificacao());
+            if (this.tipo.equals("1") && file.getTipo().equals("1")){
+            	return this.dataModificacao.compareTo(file.getDataModificacao());
+            } else {
+            	return 0;
+            }
         } else {
             return 999;
         }
