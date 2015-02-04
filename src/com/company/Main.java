@@ -58,7 +58,7 @@ public class Main {
         System.out.println("-----------------------------------------");
         listFilesClient.addAll(listFilesFromFolder(new File(infoEntrada.getDirLocal())));
         System.out.println("-----------------------------------------");
-        listFilesServer.addAll(listFilesFromServer("/"));
+        listFilesServer.addAll(listFilesFromServer(infoEntrada.getDirRemoto()));
     }
 
     private static void cicloC() throws IOException {
@@ -137,11 +137,6 @@ public class Main {
 
         OldlistFilesServer.clear();
         OldlistFilesServer.addAll(listFilesServer);
-        /*
-        for(FileFTP fileFTP:listFilesServer){
-            puxarDoServer(fileFTP);
-        }
-        */
     }
 
     private static void deletarDoServer(FileFTP fileFTP) throws IOException {

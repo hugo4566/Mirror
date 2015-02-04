@@ -4,4 +4,4 @@ ftp.xpg.com.br
 m1rr0rftp
 teste123
 /home/hugo/Documents/sincronizar
-/docs/
+/
