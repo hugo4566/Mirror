@@ -32,7 +32,7 @@ public class SimpleFTP {
      * Connects to an FTP server and logs in with the supplied username and
      * password.
      */
-    public synchronized String connect(String host, String login, String senha) throws IOException {
+    public synchronized String connect(String host, String login, String senha,int porta) throws IOException {
         socket = new Socket(host, 21);
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         writer = new BufferedWriter(

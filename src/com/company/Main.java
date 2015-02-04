@@ -51,7 +51,7 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         infoEntrada = new InfoEntrada(br).invoke();
         System.out.println(infoEntrada.toString());
-        System.out.println(simpleFTP.connect(infoEntrada.getHost(), infoEntrada.getUsuario(), infoEntrada.getSenha()));
+        System.out.println(simpleFTP.connect(infoEntrada.getHost(), infoEntrada.getUsuario(), infoEntrada.getSenha(), infoEntrada.getPorta()));
     }
 
     private static void cicloB() throws IOException {
